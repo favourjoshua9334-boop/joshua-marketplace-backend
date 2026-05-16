@@ -116,4 +116,4 @@ async function logout(req, res) {
   res.json({ message: 'Logged out' });
 }
 
-export { register, login, me, logout };
+export { register, login, me, updateProfile, logout };
