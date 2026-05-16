@@ -8,6 +8,15 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import userRoutes from './routes/userRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import verificationRoutes from './routes/verificationRoutes.js';
+import productRoutes from './routes/productRoutes.js';
+import cartRoutes from './routes/cartRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
+import favoritesRoutes from './routes/favoritesRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
+import messagesRoutes from './routes/messagesRoutes.js';
+import { ensureDataFile } from './utils/db.js';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -44,6 +53,13 @@ async function ensureJsonDatabase() {
       await fs.writeFile(usersFilePath, '[]', 'utf8');
       console.log('✅ Created JSON database file at:', usersFilePath);
     }
+    // ensure other JSON templates exist
+    await ensureDataFile('products.json');
+    await ensureDataFile('verifications.json');
+    await ensureDataFile('carts.json');
+    await ensureDataFile('orders.json');
+    await ensureDataFile('favorites.json');
+    await ensureDataFile('messages.json');
   } catch (error) {
     console.error('❌ Failed to initialize JSON database:', error.message);
     process.exit(1);
@@ -66,6 +82,14 @@ app.get('/api/test', (req, res) => {
 
 // Import and use user routes
 app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/verification', verificationRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/favorites', favoritesRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/messages', messagesRoutes);
 
 // ============================================
 // ERROR HANDLING

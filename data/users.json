@@ -1,18 +1,62 @@
 [
   {
-    "id": "509dfa8a-eee6-4400-9c55-439fe4d90c09",
-    "name": "Test User",
-    "email": "testuser@example.com",
-    "password": "$2a$10$L4.qhRdbtiNTTdG.Xaj1Cuqw.N4nIDo6ic1lX1G9F/SQaVCS7g7/i",
-    "createdAt": "2026-05-15T13:56:36.991Z",
-    "isAdmin": false
+    "id": "1778924053321",
+    "name": "Test Seller",
+    "email": "seller1778924052452@example.com",
+    "password": "$2a$10$gfe1PWp4RUZYTAYO4/DMEesLNt/R2v73qtlEFIr7fUhV5038/YZOe",
+    "role": "seller",
+    "verified": false,
+    "banned": false,
+    "createdAt": "2026-05-16T09:34:13.321Z"
   },
   {
-    "id": "17a76c7f-916a-4b4e-8fa1-7e677ebef3c8",
-    "name": "Joshua",
-    "email": "joshua@test.com",
-    "password": "$2a$10$3SpE0hWHjZxJKh6yYS7apOgt.GF.Whu1V6q/T4zIyG3.sO7wGbpM.",
-    "createdAt": "2026-05-15T14:22:15.379Z",
-    "isAdmin": false
+    "id": "1778924053729",
+    "name": "Admin User",
+    "email": "admin1778924053414@example.com",
+    "password": "$2a$10$hJoEPIXewt35nMK2umMV1ulkAso8QRze/OpZqZuBoOLeeYPWKVlh.",
+    "role": "buyer",
+    "verified": false,
+    "banned": false,
+    "createdAt": "2026-05-16T09:34:13.729Z"
+  },
+  {
+    "id": "1778924095489",
+    "name": "Test Seller",
+    "email": "seller1778924094892@example.com",
+    "password": "$2a$10$By6ZGwE3Dj7eb8Qzppu/Z.ZpgYugRMsHeL7SM3mIQJ747QyGMmbii",
+    "role": "seller",
+    "verified": true,
+    "banned": false,
+    "createdAt": "2026-05-16T09:34:55.489Z"
+  },
+  {
+    "id": "1778924095871",
+    "name": "Admin User",
+    "email": "admin1778924095525@example.com",
+    "password": "$2a$10$/Zc9Q8HPmbfZjIR9zx4bgOf0Zx56MfQValmzegN3ONMWxrvFDKvjy",
+    "role": "admin",
+    "verified": false,
+    "banned": false,
+    "createdAt": "2026-05-16T09:34:55.871Z"
+  },
+  {
+    "id": "1778924619877",
+    "name": "Test Seller",
+    "email": "seller1778924619055@example.com",
+    "password": "$2a$10$7A9eYMPayhBZZF8sHp8Nfu5/g.43M5IZEAPboGWuARL1VKTUYWEVu",
+    "role": "seller",
+    "verified": true,
+    "banned": false,
+    "createdAt": "2026-05-16T09:43:39.877Z"
+  },
+  {
+    "id": "1778924620375",
+    "name": "Admin User",
+    "email": "admin1778924619992@example.com",
+    "password": "$2a$10$OYYg.udLc8fO/AoUUrSBTOuykE1n5GzKo/uLu8pOHq6ldcHoRkKR2",
+    "role": "admin",
+    "verified": false,
+    "banned": false,
+    "createdAt": "2026-05-16T09:43:40.375Z"
   }
 ]
