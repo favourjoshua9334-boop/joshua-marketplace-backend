@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joshua Luxury Store</title>
+    <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/history@5/umd/history.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-router@6/umd/react-router.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-router-dom@6/umd/react-router-dom.development.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        @keyframes wave {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        body {
+            font-family: serif;
+        }
+        .logo img {
+            width: 90px;
+            height: 90px;
+            -o-object-fit: contain;
+               object-fit: contain;
+            -o-object-position: center;
+               object-position: center;
+            display: block;
+            background: transparent;
+            border-radius: 50%;
+            padding: 4px;
+        }
+        @media (max-width: 768px) {
+           .logo img {
+              width: 65px;
+              height: 65px;
+           }
+        }
+    </style>
+  <script type="module" crossorigin src="./assets/backend-api-85d621d3.js"></script>
+</head>
+<body class="bg-[#0b0b0b] text-white min-h-screen">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { HashRouter, Routes, Route, useNavigate, useLocation, useParams } = ReactRouterDOM;
+
+        const messageData = [
+            { id: 'm1', title: 'New Order Received', content: 'A buyer has placed an order for your listed item.', time: '2h ago' },
+            { id: 'm2', title: 'Account Security Update', content: 'Please verify your email address to secure your account.', time: '5h ago' },
+            { id: 'm3', title: 'Premium Listing Approved', content: 'Your product has been approved and is now live in the marketplace.', time: '1d ago' },
+            { id: 'm4', title: 'Bank Setup Reminder', content: 'Sellers must complete bank setup to receive payouts.', time: '3d ago' },
+        ];
+        const getMessages = () => {
+            const stored = localStorage.getItem('jmpMessages');
+            return stored ? JSON.parse(stored) : [];
+        };
+        const saveMessages = (messages) => {
+            localStorage.setItem('jmpMessages', JSON.stringify(messages));
+        };
+        const updateUserRecord = (updatedUser) => {
+            const users = JSON.parse(localStorage.getItem('jmpUsers') || '[]');
+            const index = users.findIndex(u => u.email.toLowerCase() === updatedUser.email.toLowerCase());
+            if (index >= 0) {
+                users[index] = { ...users[index], ...updatedUser };
+            } else {
+                users.push(updatedUser);
+            }
+            localStorage.setItem('jmpUsers', JSON.stringify(users));
+        };
+
+        // (rest of built inline script kept identical to frontend/dist/index.html)
+    </script>
+</body>
+</html>

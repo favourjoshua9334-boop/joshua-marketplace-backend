@@ -1,0 +1,2242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joshua Luxury Store</title>
+    <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/history@5/umd/history.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-router@6/umd/react-router.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-router-dom@6/umd/react-router-dom.development.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        @keyframes wave {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        body {
+            font-family: serif;
+        }
+        .logo img {
+            width: 90px;
+            height: 90px;
+            -o-object-fit: contain;
+               object-fit: contain;
+            -o-object-position: center;
+               object-position: center;
+            display: block;
+            background: transparent;
+            border-radius: 50%;
+            padding: 4px;
+        }
+        @media (max-width: 768px) {
+           .logo img {
+              width: 65px;
+              height: 65px;
+           }
+        }
+    </style>
+  <script type="module" crossorigin src="./assets/backend-api-85d621d3.js"></script>
+</head>
+<body class="bg-[#0b0b0b] text-white min-h-screen">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { HashRouter, Routes, Route, useNavigate, useLocation, useParams } = ReactRouterDOM;
+
+        const messageData = [
+            { id: 'm1', title: 'New Order Received', content: 'A buyer has placed an order for your listed item.', time: '2h ago' },
+            { id: 'm2', title: 'Account Security Update', content: 'Please verify your email address to secure your account.', time: '5h ago' },
+            { id: 'm3', title: 'Premium Listing Approved', content: 'Your product has been approved and is now live in the marketplace.', time: '1d ago' },
+            { id: 'm4', title: 'Bank Setup Reminder', content: 'Sellers must complete bank setup to receive payouts.', time: '3d ago' },
+        ];
+        const getMessages = () => {
+            const stored = localStorage.getItem('jmpMessages');
+            return stored ? JSON.parse(stored) : [];
+        };
+        const saveMessages = (messages) => {
+            localStorage.setItem('jmpMessages', JSON.stringify(messages));
+        };
+        const updateUserRecord = (updatedUser) => {
+            const users = JSON.parse(localStorage.getItem('jmpUsers') || '[]');
+            const index = users.findIndex(u => u.email.toLowerCase() === updatedUser.email.toLowerCase());
+            if (index >= 0) {
+                users[index] = { ...users[index], ...updatedUser };
+            } else {
+                users.push(updatedUser);
+            }
+            localStorage.setItem('jmpUsers', JSON.stringify(users));
+        };
+
+        const LandingPage = () => {
+            const navigate = useNavigate();
+            const [clickCount, setClickCount] = useState(0);
+            const [lastClickTime, setLastClickTime] = useState(0);
+
+            const handleLogoClick = () => {
+                const now = Date.now();
+                if (now - lastClickTime > 2000) {
+                    setClickCount(1);
+                } else {
+                    setClickCount(prev => prev + 1);
+                }
+                setLastClickTime(now);
+
+                if (clickCount + 1 >= 4) {
+                    navigate('/admin-login');
+                    setClickCount(0);
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-[#0b0b0b] text-white font-serif">
+                    {/* Header with Logo */}
+                    <header className="flex justify-center pt-8">
+                        <div
+                            onClick={handleLogoClick}
+                            className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 bg-black rounded-lg flex items-center justify-center cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300 border border-[#D4AF37]"
+                            style={{
+                                boxShadow: '0 0 30px rgba(212, 175, 55, 0.3)'
+                            }}
+                        >
+                            <img
+                                src="Image/my-logo.png"
+                                alt="Joshua Luxury Store logo"
+                                style={{
+                                    width: '90%',
+                                    height: '90%',
+                                    objectFit: 'contain'
+                                }}
+                            />
+                        </div>
+                    </header>
+
+                    {/* Hero Section */}
+                    <section className="relative flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+                        <div
+                            className="absolute inset-0 opacity-20"
+                            style={{
+                                background: 'linear-gradient(45deg, #D4AF37 0%, #f4e87c 50%, #D4AF37 100%)',
+                                backgroundSize: '200% 200%',
+                                animation: 'wave 5s ease-in-out infinite'
+                            }}
+                        ></div>
+                        {/* Sparkles */}
+                        <div className="absolute inset-0 pointer-events-none">
+                            {Array.from({length: 20}, (_, i) => (
+                                <div
+                                    key={i}
+                                    className="absolute w-1 h-1 bg-[#D4AF37] rounded-full animate-pulse"
+                                    style={{
+                                        left: `${Math.random() * 100}%`,
+                                        top: `${Math.random() * 100}%`,
+                                        animationDelay: `${Math.random() * 2}s`,
+                                        animationDuration: `${2 + Math.random() * 2}s`
+                                    }}
+                                ></div>
+                            ))}
+                        </div>
+
+                        <h1 className="text-5xl md:text-7xl font-bold text-[#D4AF37] mb-4 z-10" style={{ textShadow: '0 0 20px #D4AF37' }}>
+                            Joshua Luxury Store
+                        </h1>
+                        <p className="text-xl md:text-2xl mb-2 z-10">
+                            The Premium Marketplace for Discerning Buyers and Sellers
+                        </p>
+                        <p className="text-lg mb-8 z-10 text-[#D4AF37]">
+                            Luxury • Quality • Trust
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-4 z-10 justify-center">
+                            <button
+                                onClick={() => navigate('/signup')}
+                                className="bg-[#D4AF37] text-black px-6 py-3 rounded-lg font-semibold hover:bg-opacity-80 transition-colors"
+                            >
+                                Get Started
+                            </button>
+                            <button
+                                onClick={() => navigate('/login')}
+                                className="border-2 border-[#D4AF37] text-[#D4AF37] px-6 py-3 rounded-lg font-semibold hover:bg-[#D4AF37] hover:text-black transition-colors"
+                            >
+                                Sign In
+                            </button>
+                            <button
+                                onClick={() => {
+                                    const token = localStorage.getItem('jmpAuthToken');
+                                    if (token) {
+                                        window.location.href = 'Marketplace.html';
+                                    } else {
+                                        navigate('/signup');
+                                    }
+                                }}
+                                className="border-2 border-[#D4AF37] text-[#D4AF37] px-6 py-3 rounded-lg font-semibold hover:bg-[#D4AF37] hover:text-black transition-colors"
+                            >
+                                Go Live
+                            </button>
+                        </div>
+                    </section>
+
+                    {/* Sections */}
+                    <section className="py-16 px-4">
+                        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div className="text-center">
+                                <h3 className="text-2xl font-bold text-[#D4AF37] mb-4">Premium Marketplace</h3>
+                                <p className="text-gray-300">Discover exclusive items from trusted sellers in our curated luxury marketplace.</p>
+                            </div>
+                            <div className="text-center">
+                                <h3 className="text-2xl font-bold text-[#D4AF37] mb-4">Secure Transactions</h3>
+                                <p className="text-gray-300">Enjoy peace of mind with our advanced security measures and encrypted transactions.</p>
+                            </div>
+                            <div className="text-center">
+                                <h3 className="text-2xl font-bold text-[#D4AF37] mb-4">Curated Quality</h3>
+                                <p className="text-gray-300">Every item is carefully vetted to ensure the highest standards of quality and authenticity.</p>
+                            </div>
+                        </div>
+              
+                        </section>
+                </div>
+            );
+        };
+
+        const Signup = () => {
+            const navigate = useNavigate();
+            const [firstName, setFirstName] = useState('');
+            const [lastName, setLastName] = useState('');
+            const [email, setEmail] = useState('');
+            const [phone, setPhone] = useState('');
+            const [password, setPassword] = useState('');
+            const [role, setRole] = useState('');
+            const [businessWhatsApp, setBusinessWhatsApp] = useState('');
+            const [businessAddress, setBusinessAddress] = useState('');
+            const [error, setError] = useState('');
+
+            const getExistingUsers = () => {
+                const users = localStorage.getItem('jmpUsers');
+                return users ? JSON.parse(users) : [];
+            };
+
+            const existingUsers = getExistingUsers();
+            const existingEmails = existingUsers.map(u => u.email.toLowerCase());
+            const existingPhones = existingUsers.map(u => u.phone);
+
+            const createUsername = (first, last) => {
+                const base = `${first.trim().toLowerCase()}${last.trim().toLowerCase()}`.replace(/[^a-z0-9]/g, '');
+                const suffix = Math.floor(100 + Math.random() * 900);
+                return `${base || 'user'}${suffix}`;
+            };
+
+            const validatePassword = (value) => {
+                const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+                return strongRegex.test(value);
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                setError('');
+
+                if (!firstName || !lastName || !email || !phone || !password || !role) {
+                    setError('All fields are required.');
+                    return;
+                }
+
+                if (role === 'seller' && (!businessWhatsApp || !businessAddress)) {
+                    setError('Business WhatsApp and Address are required for sellers.');
+                    return;
+                }
+
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    setError('Enter a valid email address.');
+                    return;
+                }
+
+                const phoneRegex = /^\+?[0-9]{7,15}$/;
+                if (!phoneRegex.test(phone)) {
+                    setError('Enter a valid phone number with country code.');
+                    return;
+                }
+
+                if (!validatePassword(password)) {
+                    setError('Password must include uppercase, lowercase, number, and special character.');
+                    return;
+                }
+
+                if (existingEmails.includes(email.toLowerCase())) {
+                    setError('This email is already registered.');
+                    return;
+                }
+
+                if (existingPhones.includes(phone)) {
+                    setError('This phone number is already registered.');
+                    return;
+                }
+
+                const fullName = `${firstName.trim()} ${lastName.trim()}`;
+
+                try {
+                    await window.backendApi.registerUser({
+                        name: fullName,
+                        email,
+                        password,
+                        userType: role,
+                        businessWhatsApp: role === 'seller' ? businessWhatsApp : '',
+                        businessAddress: role === 'seller' ? businessAddress : ''
+                    });
+                    navigate('/login');
+                } catch (error) {
+                    setError(error.message || 'Registration failed. Please try again.');
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-[#0b0b0b] text-white flex items-center justify-center px-4">
+                    <div className="w-full max-w-md bg-[#111111] border border-[#D4AF37] rounded-3xl p-8 shadow-2xl shadow-[#D4AF37]/10">
+                        <h1 className="text-4xl text-[#D4AF37] text-center mb-6 font-bold">Create Account</h1>
+                        <form onSubmit={handleSubmit} className="space-y-5">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-300 mb-2">First Name</label>
+                                    <input
+                                        id="firstName"
+                                        type="text"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                        className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                                        placeholder="First name"
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-300 mb-2">Last Name</label>
+                                    <input
+                                        id="lastName"
+                                        type="text"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                        className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                                        placeholder="Last name"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                                <input
+                                    id="email"
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                                    placeholder="Enter your email"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">Phone</label>
+                                <input
+                                    id="phone"
+                                    type="tel"
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                    className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                                    placeholder="+1234567890"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                                <input
+                                    id="password"
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                                    placeholder="Enter a strong password"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="role" className="block text-sm font-medium text-gray-300 mb-2">Who are you?</label>
+                                <select
+                                    id="role"
+                                    value={role}
+                                    onChange={(e) => setRole(e.target.value)}
+                                    className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                                >
+                                    <option value="">Select an option</option>
+                                    <option value="seller">I am a seller and will post products</option>
+                                    <option value="buyer">I am not a seller</option>
+                                </select>
+                            </div>
+                            {role === 'seller' && (
+                                <>
+                                    <div>
+                                        <label htmlFor="businessWhatsApp" className="block text-sm font-medium text-gray-300 mb-2">Business WhatsApp Number</label>
+                                        <input
+                                            id="businessWhatsApp"
+                                            type="tel"
+                                            value={businessWhatsApp}
+                                            onChange={(e) => setBusinessWhatsApp(e.target.value)}
+                                            className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                                            placeholder="+1234567890"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="businessAddress" className="block text-sm font-medium text-gray-300 mb-2">Business Address</label>
+                                        <textarea
+                                            id="businessAddress"
+                                            value={businessAddress}
+                                            onChange={(e) => setBusinessAddress(e.target.value)}
+                                            className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                                            placeholder="Enter your business address"
+                                            rows="3"
+                                        />
+                                    </div>
+                                </>
+                            )}
+                            {error && (
+                                <div className="text-red-400 text-sm text-center">
+                                    {error}
+                                </div>
+                            )}
+                            <button
+                                type="submit"
+                                className="w-full bg-[#D4AF37] text-black py-3 rounded-full font-semibold hover:bg-opacity-80 transition-colors"
+                            >
+                                Create Account
+                            </button>
+                        </form>
+                        <div className="mt-6 text-center">
+                            <a href="#" onClick={() => navigate('/')} className="text-[#D4AF37] hover:underline">Back to Home</a>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Login = () => {
+            const navigate = useNavigate();
+            const [email, setEmail] = useState('');
+            const [password, setPassword] = useState('');
+            const [error, setError] = useState('');
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                setError('');
+
+                // Basic validation
+                if (!email || !password) {
+                    setError('Please fill in all fields.');
+                    return;
+                }
+
+                // Simple email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    setError('Please enter a valid email address.');
+                    return;
+                }
+
+                try {
+                    await window.backendApi.loginUser({ email, password });
+                    window.location.href = 'Marketplace.html';
+                } catch (error) {
+                    setError(error.message || 'Invalid email or password.');
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-[#0b0b0b] text-white flex items-center justify-center px-4">
+                    <div className="w-full max-w-md">
+                        <h1 className="text-4xl text-[#D4AF37] text-center mb-8 font-bold">Login</h1>
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div>
+                                <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                                    placeholder="Enter your email"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                                <input
+                                    type="password"
+                                    id="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                                    placeholder="Enter your password"
+                                />
+                            </div>
+                            {error && (
+                                <div className="text-red-400 text-sm text-center">
+                                    {error}
+                                </div>
+                            )}
+                            <button
+                                type="submit"
+                                className="w-full bg-[#D4AF37] text-black py-3 px-4 rounded-md font-semibold hover:bg-opacity-80 transition-colors"
+                            >
+                                Sign In
+                            </button>
+                        </form>
+                        <div className="mt-6 text-center">
+                            <a href="#" onClick={() => navigate('/')} className="text-[#D4AF37] hover:underline">Back to Home</a>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const AdminLogin = () => {
+            const navigate = useNavigate();
+            const [email, setEmail] = useState('');
+            const [pin, setPin] = useState('');
+            const [error, setError] = useState('');
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                setError('');
+
+                if (email !== 'oluwapelumif0@gmail.com' || pin !== '655584091') {
+                    setError('Access denied.');
+                    return;
+                }
+
+                localStorage.setItem('jmpAdminAccess', 'true');
+                window.location.href = './admin.html';
+            };
+
+            return (
+                <div className="min-h-screen bg-[#0b0b0b] text-white flex items-center justify-center px-4">
+                    <div className="w-full max-w-md bg-[#111111] border border-[#D4AF37] rounded-3xl p-8 shadow-2xl shadow-[#D4AF37]/10">
+                        <h1 className="text-4xl text-[#D4AF37] text-center mb-8 font-bold">Admin Login</h1>
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div>
+                                <label htmlFor="adminEmail" className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                                <input
+                                    id="adminEmail"
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                                    placeholder="Enter admin email"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="adminPin" className="block text-sm font-medium text-gray-300 mb-2">PIN</label>
+                                <input
+                                    id="adminPin"
+                                    type="password"
+                                    inputMode="numeric"
+                                    pattern="[0-9]*"
+                                    value={pin}
+                                    onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
+                                    className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                                    placeholder="Enter PIN"
+                                />
+                            </div>
+                            {error && (
+                                <div className="text-red-400 text-sm text-center">{error}</div>
+                            )}
+                            <button
+                                type="submit"
+                                className="w-full bg-[#D4AF37] text-black py-3 rounded-full font-semibold hover:bg-opacity-80 transition-colors"
+                            >
+                                Unlock Admin
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        const ProfileSetup = () => {
+            const location = useLocation();
+            const navigate = useNavigate();
+            const [username, setUsername] = useState('');
+            const [firstName, setFirstName] = useState('');
+            const [lastName, setLastName] = useState('');
+            const [email, setEmail] = useState('');
+            const [phone, setPhone] = useState('');
+            const [picture, setPicture] = useState('');
+            const [isSeller, setIsSeller] = useState(false);
+            const [error, setError] = useState('');
+
+            useEffect(() => {
+                const savedProfile = localStorage.getItem('jmpProfile');
+                const state = location.state;
+
+                if (savedProfile) {
+                    const profile = JSON.parse(savedProfile);
+                    setUsername(profile.username || '');
+                    setFirstName(profile.firstName || '');
+                    setLastName(profile.lastName || '');
+                    setEmail(profile.email || '');
+                    setPhone(profile.phone || '');
+                    setPicture(profile.picture || '');
+                    setIsSeller(profile.isSeller || false);
+                }
+
+                if (state) {
+                    setUsername(state.username || '');
+                    setFirstName(state.firstName || '');
+                    setLastName(state.lastName || '');
+                    setEmail(state.email || '');
+                }
+            }, [location.state]);
+
+            const handlePictureChange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = () => setPicture(reader.result);
+                reader.readAsDataURL(file);
+            };
+
+            const generateUsername = (first, last) => {
+                const base = `${first.trim().toLowerCase()}${last.trim().toLowerCase()}`.replace(/[^a-z0-9]/g, '');
+                const suffix = Math.floor(100 + Math.random() * 900);
+                return `${base || 'user'}${suffix}`;
+            };
+
+            const validateEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+            const validatePhone = (value) => /^\+?[0-9]{7,15}$/.test(value);
+
+            const handleSave = (e) => {
+                e.preventDefault();
+                setError('');
+
+                if (!firstName || !lastName || !email || !phone) {
+                    setError('Please complete all fields.');
+                    return;
+                }
+
+                if (!validateEmail(email)) {
+                    setError('Please enter a valid email address.');
+                    return;
+                }
+
+                if (!validatePhone(phone)) {
+                    setError('Please enter a valid phone number with country code.');
+                    return;
+                }
+
+                const finalUsername = username || generateUsername(firstName, lastName);
+                const profile = {
+                    username: finalUsername,
+                    firstName,
+                    lastName,
+                    email,
+                    phone,
+                    picture,
+                    isSeller,
+                };
+
+                localStorage.setItem('jmpProfile', JSON.stringify(profile));
+
+                const users = JSON.parse(localStorage.getItem('jmpUsers') || '[]');
+                const newUser = {
+                    username: finalUsername,
+                    firstName,
+                    lastName,
+                    email,
+                    phone,
+                    joined: new Date().toISOString().split('T')[0],
+                };
+                users.push(newUser);
+                localStorage.setItem('jmpUsers', JSON.stringify(users));
+
+                window.location.href = 'Marketplace.html';
+            };
+
+            return (
+                <div className="min-h-screen bg-[#0b0b0b] text-white flex items-center justify-center px-4">
+                    <div className="w-full max-w-lg bg-[#111111] border border-[#D4AF37] rounded-3xl p-8 shadow-2xl shadow-[#D4AF37]/10">
+                        <h1 className="text-4xl text-[#D4AF37] text-center mb-6 font-bold">Profile Setup</h1>
+                        <p className="text-gray-300 mb-6 text-center">Upload a profile picture and save your premium account details.</p>
+                        <form onSubmit={handleSave} className="space-y-5">
+                            <div className="flex items-center justify-center mb-4">
+                                <label htmlFor="pictureUpload" className="group relative inline-flex cursor-pointer rounded-full border-2 border-[#D4AF37] p-2 hover:border-opacity-80">
+                                    <input id="pictureUpload" type="file" accept="image/*" className="hidden" onChange={handlePictureChange} />
+                                    <div className="w-24 h-24 rounded-full bg-gray-800 flex items-center justify-center overflow-hidden">
+                                        {picture ? (
+                                            <img src={picture} alt="Profile" className="object-cover w-full h-full" />
+                                        ) : (
+                                            <span className="text-[#D4AF37] text-xl">+</span>
+                                        )}
+                                    </div>
+                                    <span className="sr-only">Upload profile picture</span>
+                                </label>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-300 mb-2">First Name</label>
+                                    <input
+                                        id="firstName"
+                                        type="text"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                        className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                                        placeholder="First name"
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-300 mb-2">Last Name</label>
+                                    <input
+                                        id="lastName"
+                                        type="text"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                        className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                                        placeholder="Last name"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                                <input
+                                    id="email"
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                                    placeholder="Enter your email"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">Phone</label>
+                                <input
+                                    id="phone"
+                                    type="tel"
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                    className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                                    placeholder="+1234567890"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">Username</label>
+                                <input
+                                    id="username"
+                                    type="text"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                                    placeholder="Auto-generated username"
+                                />
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <input
+                                    id="isSeller"
+                                    type="checkbox"
+                                    checked={isSeller}
+                                    onChange={(e) => setIsSeller(e.target.checked)}
+                                    className="h-4 w-4 text-[#D4AF37] bg-gray-800 border-gray-700 rounded focus:ring-[#D4AF37]"
+                                />
+                                <label htmlFor="isSeller" className="text-gray-300 text-sm">I am a seller and will post products</label>
+                            </div>
+                            {error && (
+                                <div className="text-red-400 text-sm text-center">
+                                    {error}
+                                </div>
+                            )}
+                            <button
+                                type="submit"
+                                className="w-full bg-[#D4AF37] text-black py-3 rounded-full font-semibold hover:bg-opacity-80 transition-colors"
+                            >
+                                Save Profile
+                            </button>
+                        </form>
+                        <div className="mt-6 text-center">
+                            <button onClick={() => window.location.href = 'Marketplace.html'} className="text-[#D4AF37] hover:underline">Skip for now</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Dashboard = () => {
+            const navigate = useNavigate();
+            const [currentUser, setCurrentUser] = useState(null);
+            const [userProducts, setUserProducts] = useState([]);
+            const [showAddProduct, setShowAddProduct] = useState(false);
+            const [showEditProfile, setShowEditProfile] = useState(false);
+            const [formData, setFormData] = useState({ title: '', description: '', price: '', category: '', subcategory: '', images: [] });
+            const [messages, setMessages] = useState([]);
+            const unreadCount = messages.filter(msg => !msg.read).length;
+            const [profileData, setProfileData] = useState({});
+            const [allProducts, setAllProducts] = useState([]);
+
+            useEffect(() => {
+                const user = localStorage.getItem('jmpCurrentUser');
+                if (!user) {
+                    navigate('/');
+                    return;
+                }
+                const userData = JSON.parse(user);
+                setCurrentUser(userData);
+                setProfileData(userData);
+                loadUserProducts(userData.email);
+                loadMessages(userData.email);
+                loadAllProducts();
+            }, []);
+
+            const loadUserProducts = (email) => {
+                const products = localStorage.getItem('jmpProducts');
+                if (products) {
+                    const productList = JSON.parse(products);
+                    const userProds = productList.filter(p => p.userEmail === email);
+                    setUserProducts(userProds);
+                }
+            };
+
+            const loadMessages = (email) => {
+                const msgs = localStorage.getItem('jmpMessages');
+                if (msgs) {
+                    const msgList = JSON.parse(msgs);
+                    const userMsgs = msgList
+                        .filter(m => m.recipientEmail === email)
+                        .map(m => ({ ...m, read: m.read ?? false }));
+                    setMessages(userMsgs);
+                }
+            };
+
+            const loadAllProducts = () => {
+                const products = localStorage.getItem('jmpProducts');
+                if (products) {
+                    const productList = JSON.parse(products);
+                    const approved = productList.filter(p => p.status === 'Approved');
+                    setAllProducts(approved);
+                }
+            };
+
+            const handleAddProduct = async (e) => {
+                e.preventDefault();
+                if (!formData.title || !formData.description || !formData.price) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+
+                if (!formData.images || formData.images.length === 0) {
+                    alert('Please upload at least one product image.');
+                    return;
+                }
+
+                const images = [];
+                if (formData.images) {
+                    for (let file of formData.images) {
+                        const reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        await new Promise(resolve => reader.onload = resolve);
+                        images.push(reader.result);
+                    }
+                }
+
+                const newProduct = {
+                    id: Date.now().toString(),
+                    title: formData.title,
+                    description: formData.description,
+                    price: formData.price,
+                    images: images,
+                    userEmail: currentUser.email,
+                    userName: `${currentUser.firstName} ${currentUser.lastName}`,
+                    status: 'Pending',
+                    createdAt: new Date().toISOString().split('T')[0]
+                };
+
+                const products = localStorage.getItem('jmpProducts');
+                const productList = products ? JSON.parse(products) : [];
+                productList.push(newProduct);
+                localStorage.setItem('jmpProducts', JSON.stringify(productList));
+
+                setUserProducts([...userProducts, newProduct]);
+                setFormData({ title: '', description: '', price: '', images: [] });
+                setShowAddProduct(false);
+                alert('Product submitted successfully. Waiting for admin approval.');
+            };
+
+            const handleLogout = () => {
+                localStorage.removeItem('jmpCurrentUser');
+                localStorage.removeItem('jmpAuthToken');
+                navigate('/');
+            };
+
+            if (!currentUser) return <div className="text-center pt-20">Loading...</div>;
+
+            return (
+                <div className="min-h-screen bg-[#0b0b0b] text-white">
+                    {/* Top Navigation Bar */}
+                    <header className="bg-[#111111] border-b border-[#D4AF37] px-6 py-4">
+                        <div className="max-w-7xl mx-auto flex items-center justify-between">
+                            <div className="flex flex-col items-center logo">
+                                <img src="Image/my-logo.png" alt="Joshua Luxury Store Logo" />
+                                <div className="text-sm font-bold text-[#D4AF37]">Joshua Luxury Store</div>
+                            </div>
+                            <div className="flex items-center gap-6">
+                                <button
+                                    onClick={() => navigate('/favorites')}
+                                    className="relative border border-[#D4AF37] text-[#D4AF37] px-4 py-2 rounded-full hover:bg-[#D4AF37] hover:text-black transition-colors flex items-center gap-2"
+                                >
+                                    ❤️ Favorites
+                                    {favorites.length > 0 && (
+                                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                            {favorites.length}
+                                        </span>
+                                    )}
+                                </button>
+                                <button
+                                    onClick={() => navigate('/cart')}
+                                    className="relative border border-[#D4AF37] text-[#D4AF37] px-4 py-2 rounded-full hover:bg-[#D4AF37] hover:text-black transition-colors flex items-center gap-2"
+                                >
+                                    🛒 Cart
+                                    {cart.length > 0 && (
+                                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                            {cart.length}
+                                        </span>
+                                    )}
+                                </button>
+                                <button
+                                    onClick={() => navigate('/inbox')}
+                                    className="relative border border-[#D4AF37] text-[#D4AF37] px-4 py-2 rounded-full hover:bg-[#D4AF37] hover:text-black transition-colors flex items-center gap-2"
+                                >
+                                    📬 Inbox
+                                    {unreadCount > 0 && (
+                                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                            {unreadCount}
+                                        </span>
+                                    )}
+                                </button>
+
+                                <button
+                                    onClick={() => setShowEditProfile(!showEditProfile)}
+                                    className="w-12 h-12 rounded-full border-2 border-[#D4AF37] bg-gray-800 flex items-center justify-center text-xl hover:bg-gray-700 transition-colors"
+                                >
+                                    {profileData.picture ? (
+                                        <img src={profileData.picture} alt="Profile" className="w-full h-full rounded-full object-cover" />
+                                    ) : (
+                                        '👤'
+                                    )}
+                                </button>
+
+                                <button
+                                    onClick={handleLogout}
+                                    className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-colors"
+                                >
+                                    Logout
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Main Content */}
+                    <div className="max-w-7xl mx-auto px-6 py-10">
+                        {/* Profile Edit Modal */}
+                        {showEditProfile && (
+                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                                <div className="bg-[#111111] border border-[#D4AF37] rounded-3xl p-8 w-full max-w-md">
+                                    <h2 className="text-3xl font-bold text-[#D4AF37] mb-6">Edit Profile</h2>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">First Name</label>
+                                            <input type="text" value={profileData.firstName || ''} onChange={(e) => setProfileData({...profileData, firstName: e.target.value})} className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">Last Name</label>
+                                            <input type="text" value={profileData.lastName || ''} onChange={(e) => setProfileData({...profileData, lastName: e.target.value})} className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                                            <input type="email" value={profileData.email || ''} disabled className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-gray-500 cursor-not-allowed" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">Phone</label>
+                                            <input type="tel" value={profileData.phone || ''} onChange={(e) => setProfileData({...profileData, phone: e.target.value})} className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white" />
+                                        </div>
+                                        <div className="flex gap-3 mt-6">
+                                            <button onClick={() => {
+                                                localStorage.setItem('jmpCurrentUser', JSON.stringify(profileData));
+                                                updateUserRecord(profileData);
+                                                setCurrentUser(profileData);
+                                                setShowEditProfile(false);
+                                                alert('Profile updated!');
+                                            }} className="flex-1 bg-[#D4AF37] text-black py-2 rounded-full font-semibold hover:bg-opacity-80">Save</button>
+                                            <button onClick={() => setShowEditProfile(false)} className="flex-1 border border-[#D4AF37] text-[#D4AF37] py-2 rounded-full font-semibold hover:bg-[#D4AF37] hover:text-black">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Add Product Modal */}
+                        {showAddProduct && (
+                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                                <div className="bg-[#111111] border border-[#D4AF37] rounded-3xl p-8 w-full max-w-md max-h-96 overflow-y-auto">
+                                    <h2 className="text-3xl font-bold text-[#D4AF37] mb-6">Post Product</h2>
+                                    <form onSubmit={handleAddProduct} className="space-y-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">Product Images</label>
+                                            <input type="file" multiple accept="image/*" onChange={(e) => setFormData({...formData, images: Array.from(e.target.files)})} className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">Product Title</label>
+                                            <input type="text" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} placeholder="e.g., Luxury Watch" className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
+                                            <textarea value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} placeholder="Describe your product..." rows="3" className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white"></textarea>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">Price (₦)</label>
+                                            <input type="number" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} placeholder="5000" className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white" />
+                                            <p className="text-xs text-gray-400 mt-1">Note: A 10% website fee will be added to the listed price.</p>
+                                        </div>
+                                        <div className="flex gap-3 mt-6">
+                                            <button type="submit" className="flex-1 bg-[#D4AF37] text-black py-2 rounded-full font-semibold hover:bg-opacity-80">Post Product</button>
+                                            <button type="button" onClick={() => setShowAddProduct(false)} className="flex-1 border border-[#D4AF37] text-[#D4AF37] py-2 rounded-full font-semibold hover:bg-[#D4AF37] hover:text-black">Cancel</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        )}
+
+                        <h1 className="text-4xl font-bold text-[#D4AF37] mb-2">Welcome, {currentUser.firstName}!</h1>
+                        <p className="text-gray-300 mb-10">Buy and sell premium items in our marketplace</p>
+
+                        <button onClick={() => setShowAddProduct(true)} className="mb-10 bg-[#D4AF37] text-black px-8 py-3 rounded-full font-semibold text-lg hover:bg-opacity-80 transition-colors">➕ Post Product</button>
+
+                        {userProducts.length > 0 && (
+                            <div className="mb-12">
+                                <h2 className="text-2xl font-bold text-[#D4AF37] mb-6">My Products</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {userProducts.map((product) => (
+                                        <div key={product.id} className="rounded-3xl overflow-hidden border border-[#D4AF37] bg-[#111111] shadow-xl">
+                                            <div className="h-48 bg-gray-800 flex items-center justify-center">
+                                                {product.images && product.images.length > 0 ? (
+                                                    <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <span className="text-6xl">📦</span>
+                                                )}
+                                            </div>
+                                            <div className="p-6">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <h3 className="text-xl font-bold text-white">{product.title}</h3>
+                                                    {product.status === 'Pending' && <span className="bg-yellow-600 text-white text-xs px-2 py-1 rounded-full">Waiting for Approval</span>}
+                                                    {product.status === 'Approved' && <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">Approved</span>}
+                                                </div>
+                                                <p className="text-gray-300 text-sm mb-3">{product.description}</p>
+                                                <p className="text-2xl font-bold text-[#D4AF37]">₦{parseInt(product.price).toLocaleString('en-NG')}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        <div>
+                                                {product.images && product.images.length > 0 ? (
+                                                    <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <span className="text-6xl">📦</span>
+                                                )}
+                                            
+                            <h2 className="text-2xl font-bold text-[#D4AF37] mb-6">Browse All Products</h2>
+                            {allProducts.length > 0 ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {allProducts.map((product) => (
+                                        <div key={product.id} className="rounded-3xl overflow-hidden border border-[#D4AF37] bg-[#111111] shadow-xl">
+                                            <div className="h-48 bg-gray-800 flex items-center justify-center"><span className="text-6xl">📦</span></div>
+                                            <div className="p-6">
+                                                <h3 className="text-xl font-bold text-white mb-2">{product.title}</h3>
+                                                <p className="text-gray-300 text-sm mb-3">{product.description}</p>
+                                                <p className="text-2xl font-bold text-[#D4AF37]">₦{parseInt(product.price).toLocaleString('en-NG')}</p>
+                                                <p className="text-gray-400 text-xs mt-2">By {product.userName}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-10 border border-dashed border-[#D4AF37] rounded-3xl">
+                                    <p className="text-gray-300 text-lg">No approved products yet</p>
+                                    <p className="text-gray-400 text-sm">Products will appear here once they are approved by admins</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Inbox = () => {
+            const navigate = useNavigate();
+            const [messages, setMessages] = useState([]);
+            const [currentUser, setCurrentUser] = useState(null);
+            const [showSellerRequest, setShowSellerRequest] = useState(false);
+            const [sellerWhatsApp, setSellerWhatsApp] = useState('');
+            const [sellerAddress, setSellerAddress] = useState('');
+            const [error, setError] = useState('');
+
+            useEffect(() => {
+                const user = localStorage.getItem('jmpCurrentUser');
+                if (user) {
+                    const userData = JSON.parse(user);
+                    setCurrentUser(userData);
+                    const msgs = localStorage.getItem('jmpMessages');
+                    if (msgs) {
+                        const msgList = JSON.parse(msgs);
+                        const userMessages = msgList
+                            .filter(m => m.recipientEmail === userData.email)
+                            .map(m => ({ ...m, read: m.read ?? false }));
+                        setMessages(userMessages);
+                    }
+                    
+                    // Request notification permission
+                    if ('Notification' in window && Notification.permission === 'default') {
+                        Notification.requestPermission();
+                    }
+                }
+            }, []);
+
+            useEffect(() => {
+                if (!currentUser) return;
+                
+                const handleStorageChange = (event) => {
+                    if (event.key !== 'jmpMessages') return;
+                    try {
+                        const msgList = JSON.parse(event.newValue || '[]');
+                        const userMessages = msgList
+                            .filter(m => m.recipientEmail === currentUser.email)
+                            .map(m => ({ ...m, read: m.read ?? false }));
+                        setMessages(userMessages);
+                        
+                        // Show notification for new messages
+                        const lastMessage = userMessages[userMessages.length - 1];
+                        if (lastMessage && 'Notification' in window && Notification.permission === 'granted') {
+                            new Notification(lastMessage.title, {
+                                body: lastMessage.content,
+                                icon: 'Image/my-logo.png',
+                                tag: lastMessage.id
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error processing message:', error);
+                    }
+                };
+
+                window.addEventListener('storage', handleStorageChange);
+                return () => window.removeEventListener('storage', handleStorageChange);
+            }, [currentUser]);
+
+            const markAllAsRead = () => {
+                const user = localStorage.getItem('jmpCurrentUser');
+                if (user) {
+                    const userData = JSON.parse(user);
+                    const allMsgs = JSON.parse(localStorage.getItem('jmpMessages') || '[]');
+                    const updatedMsgs = allMsgs.map(m =>
+                        m.recipientEmail === userData.email ? { ...m, read: true } : m
+                    );
+                    localStorage.setItem('jmpMessages', JSON.stringify(updatedMsgs));
+                    setMessages(updatedMsgs.filter(m => m.recipientEmail === userData.email));
+                }
+            };
+
+            const handleSellerRequest = (e) => {
+                e.preventDefault();
+                setError('');
+
+                if (!sellerWhatsApp || !sellerAddress) {
+                    setError('All fields are required.');
+                    return;
+                }
+
+                // Update current user to seller status
+                const updatedUser = {
+                    ...currentUser,
+                    role: 'seller',
+                    sellerStatus: 'pending_approval',
+                    businessWhatsApp: sellerWhatsApp,
+                    businessAddress: sellerAddress
+                };
+                localStorage.setItem('jmpCurrentUser', JSON.stringify(updatedUser));
+                setCurrentUser(updatedUser);
+
+                // Update user in users list
+                const users = JSON.parse(localStorage.getItem('jmpUsers') || '[]');
+                const userIndex = users.findIndex(u => u.email === currentUser.email);
+                if (userIndex !== -1) {
+                    users[userIndex] = updatedUser;
+                    localStorage.setItem('jmpUsers', JSON.stringify(users));
+                }
+
+                // Add message to inbox
+                const allMsgs = JSON.parse(localStorage.getItem('jmpMessages') || '[]');
+                allMsgs.push({
+                    id: Date.now().toString(),
+                    recipientEmail: currentUser.email,
+                    title: 'Seller Request Submitted',
+                    content: 'Your seller request has been sent for approval. You will be notified once reviewed.',
+                    time: new Date().toLocaleString(),
+                    read: false
+                });
+                localStorage.setItem('jmpMessages', JSON.stringify(allMsgs));
+                setMessages(allMsgs.filter(m => m.recipientEmail === currentUser.email));
+
+                setShowSellerRequest(false);
+                setSellerWhatsApp('');
+                setSellerAddress('');
+                alert('Your seller request has been submitted for approval!');
+            };
+
+            return (
+                <div className="min-h-screen bg-[#0b0b0b] text-white px-4 py-10">
+                    <div className="max-w-5xl mx-auto">
+                        <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                            <div>
+                                <h1 className="text-4xl md:text-5xl font-bold text-[#D4AF37]">Inbox</h1>
+                                <p className="text-gray-300 mt-2">Your latest messages and seller alerts.</p>
+                            </div>
+                            <div className="flex gap-4 flex-wrap">
+                                <button
+                                    onClick={markAllAsRead}
+                                    className="inline-flex items-center gap-2 border border-[#D4AF37] text-[#D4AF37] px-5 py-3 rounded-full font-semibold hover:bg-[#D4AF37] hover:text-black transition-colors"
+                                >
+                                    Mark all as read
+                                </button>
+                                <button
+                                    onClick={() => window.location.href = 'Marketplace.html'}
+                                    className="inline-flex items-center gap-2 border border-[#D4AF37] text-[#D4AF37] px-5 py-3 rounded-full font-semibold hover:bg-[#D4AF37] hover:text-black transition-colors"
+                                >
+                                    Back to Marketplace
+                                </button>
+                            </div>
+                        </div>
+
+                        {showSellerRequest && (
+                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+                                <div className="bg-[#111111] border border-[#D4AF37] rounded-3xl p-8 w-full max-w-md shadow-2xl">
+                                    <h2 className="text-3xl font-bold text-[#D4AF37] mb-6">Become a Seller</h2>
+                                    <form onSubmit={handleSellerRequest} className="space-y-5">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">Business WhatsApp Number</label>
+                                            <input
+                                                type="tel"
+                                                value={sellerWhatsApp}
+                                                onChange={(e) => setSellerWhatsApp(e.target.value)}
+                                                className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                                                placeholder="+1234567890"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">Business Address</label>
+                                            <textarea
+                                                value={sellerAddress}
+                                                onChange={(e) => setSellerAddress(e.target.value)}
+                                                className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                                                placeholder="Enter your business address"
+                                                rows="3"
+                                            />
+                                        </div>
+                                        {error && (
+                                            <div className="text-red-400 text-sm text-center">{error}</div>
+                                        )}
+                                        <div className="flex gap-3 pt-4">
+                                            <button
+                                                type="submit"
+                                                className="flex-1 bg-[#D4AF37] text-black py-2 rounded-full font-semibold hover:bg-opacity-80"
+                                            >
+                                                Submit Request
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setShowSellerRequest(false);
+                                                    setError('');
+                                                    setSellerWhatsApp('');
+                                                    setSellerAddress('');
+                                                }}
+                                                className="flex-1 border border-[#D4AF37] text-[#D4AF37] py-2 rounded-full font-semibold hover:bg-[#D4AF37] hover:text-black"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="grid gap-6">
+                            {messages.length === 0 ? (
+                                <p className="text-gray-300 text-center">No messages yet</p>
+                            ) : (
+                                messages.map((message) => (
+                                    <div key={message.id} className="rounded-3xl border border-[#D4AF37] bg-[#111111] p-6 shadow-2xl shadow-[#D4AF37]/10">
+                                        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                                            <div>
+                                                <h2 className="text-xl font-bold text-white">{message.title}</h2>
+                                                <p className="text-gray-400 text-sm">{message.time}</p>
+                                            </div>
+                                            <span className="rounded-full bg-[#D4AF37] px-4 py-1 text-sm font-semibold text-black">New</span>
+                                        </div>
+                                        <p className="mt-4 text-gray-300 leading-relaxed">{message.content}</p>
+                                        {message.productImage && (
+                                            <div className="mt-4">
+                                                <h3 className="text-lg font-semibold text-[#D4AF37] mb-2">Product Preview:</h3>
+                                                <div className="flex items-center gap-4 p-4 bg-[#0b0b0b] rounded-lg border border-gray-700">
+                                                    <img src={message.productImage} alt={message.productTitle} className="w-20 h-20 object-cover rounded-lg" />
+                                                    <div>
+                                                        <p className="text-white font-semibold">{message.productTitle}</p>
+                                                        <p className="text-gray-300 text-sm">{message.productDescription}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Footer = () => (
+            <footer className="py-8 px-4 border-t border-[#D4AF37] border-opacity-20 bg-[#0b0b0b]">
+                <div className="max-w-6xl mx-auto text-center">
+                    <h3 className="text-2xl font-bold text-[#D4AF37] mb-4">Help & Support</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-6">
+                        <div>
+                            <h4 className="text-lg font-semibold text-white mb-2">Instagram</h4>
+                            <a
+                                href="https://www.instagram.com/joshua_luxury_store?igsh=MWVnODBjb2FoYmd1eA=="
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-block bg-[#D4AF37] text-black px-4 py-2 rounded-full font-semibold hover:bg-opacity-80 transition-colors"
+                            >
+                                Follow on Instagram
+                            </a>
+                        </div>
+                        <div>
+                            <h4 className="text-lg font-semibold text-white mb-2">TikTok</h4>
+                            <a
+                                href="https://www.tiktok.com/@joshua_luxury_store?_r=1&_t=ZS-96FtF8a6NHz"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-block bg-[#D4AF37] text-black px-4 py-2 rounded-full font-semibold hover:bg-opacity-80 transition-colors"
+                            >
+                                Follow on TikTok
+                            </a>
+                        </div>
+                        <div>
+                            <h4 className="text-lg font-semibold text-white mb-2">WhatsApp</h4>
+                            <a
+                                href="https://wa.me/07059499334"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-block bg-[#D4AF37] text-black px-4 py-2 rounded-full font-semibold hover:bg-opacity-80 transition-colors"
+                            >
+                                Contact via WhatsApp
+                            </a>
+                        </div>
+                        <div>
+                            <h4 className="text-lg font-semibold text-white mb-2">Email</h4>
+                            <a
+                                href="mailto:oluwapelumif0@outlook.com"
+                                className="inline-block bg-[#D4AF37] text-black px-4 py-2 rounded-full font-semibold hover:bg-opacity-80 transition-colors"
+                            >
+                                Send Email
+                            </a>
+                        </div>
+                        <div>
+                            <h4 className="text-lg font-semibold text-white mb-2">Urgent</h4>
+                            <a
+                                href="tel:07059499334"
+                                className="inline-block bg-[#D4AF37] text-black px-4 py-2 rounded-full font-semibold hover:bg-opacity-80 transition-colors"
+                            >
+                                Call Now
+                            </a>
+                        </div>
+                    </div>
+                    <p className="text-gray-300">Support available during working days, response within 24 hours.</p>
+                </div>
+            </footer>
+        );
+
+        // Marketplace Components
+        const loadApprovedProducts = () => {
+            const stored = localStorage.getItem('jmpProducts');
+            if (!stored) return [];
+            try {
+                const productList = JSON.parse(stored);
+                return productList.filter((product) => product.status === 'Approved');
+            } catch (err) {
+                return [];
+            }
+        };
+
+        const parsePrice = (price) => {
+            if (typeof price === 'number') return price;
+            return Number(String(price).replace(/[^0-9.]/g, '')) || 0;
+        };
+
+        const formatPrice = (value) => '₦' + value.toLocaleString('en-NG', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+        const displayPrice = (product) => {
+            const base = parsePrice(product.price);
+            const feePrice = Math.round(base * 1.10);
+            return formatPrice(feePrice);
+        };
+
+        const MarketplaceDashboard = () => {
+            const navigate = useNavigate();
+            const [currentUser, setCurrentUser] = useState(null);
+            const [userProducts, setUserProducts] = useState([]);
+            const [showAddProduct, setShowAddProduct] = useState(false);
+            const [showEditProfile, setShowEditProfile] = useState(false);
+            const [hasOrders, setHasOrders] = useState(false);
+            const [formData, setFormData] = useState({ title: '', description: '', price: '', category: '', subcategory: '', images: [] });
+            const [orders, setOrders] = useState([]);
+            const [messages, setMessages] = useState([]);
+            const [showOrderHistory, setShowOrderHistory] = useState(false);
+            const [profileData, setProfileData] = useState({});
+            const [allProducts, setAllProducts] = useState([]);
+
+            useEffect(() => {
+                const user = localStorage.getItem('jmpCurrentUser');
+                if (!user) {
+                    navigate('/');
+                    return;
+                }
+                const userData = JSON.parse(user);
+                setCurrentUser(userData);
+                setProfileData(userData);
+                loadUserProducts(userData.email);
+                loadMessages(userData.email);
+                loadOrders(userData.email);
+                loadAllProducts();
+            }, [navigate]);
+
+            const loadUserProducts = (email) => {
+                const products = localStorage.getItem('jmpProducts');
+                if (products) {
+                    const productList = JSON.parse(products);
+                    const userProds = productList.filter(p => p.userEmail === email);
+                    setUserProducts(userProds);
+                }
+            };
+
+            const loadMessages = (email) => {
+                const msgs = localStorage.getItem('jmpMessages');
+                if (msgs) {
+                    const msgList = JSON.parse(msgs);
+                    const userMsgs = msgList.filter(m => m.recipientEmail === email);
+                    setMessages(userMsgs);
+                }
+            };
+
+            const loadOrders = (email) => {
+                const stored = localStorage.getItem('jmpOrders');
+                if (stored) {
+                    const allOrders = JSON.parse(stored);
+                    const userOrders = allOrders.filter(o => o.buyerEmail === email);
+                    setOrders(userOrders);
+                    setHasOrders(userOrders.length > 0);
+                }
+            };
+
+            const loadAllProducts = () => {
+                const products = localStorage.getItem('jmpProducts');
+                if (products) {
+                    const productList = JSON.parse(products);
+                    const approved = productList.filter(p => p.status === 'Approved');
+                    setAllProducts(approved);
+                }
+            };
+
+            const handleAddProduct = async (e) => {
+                e.preventDefault();
+                if (!formData.title || !formData.description || !formData.price) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+
+                if (!formData.images || formData.images.length === 0) {
+                    alert('Please upload at least one product image.');
+                    return;
+                }
+
+                const images = [];
+                if (formData.images) {
+                    for (let file of formData.images) {
+                        const reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        await new Promise(resolve => reader.onload = resolve);
+                        images.push(reader.result);
+                    }
+                }
+
+                const newProduct = {
+                    id: Date.now().toString(),
+                    title: formData.title,
+                    description: formData.description,
+                    price: formData.price,
+                    images: images,
+                    userEmail: currentUser.email,
+                    userName: `${currentUser.firstName} ${currentUser.lastName}`,
+                    status: 'Pending',
+                    createdAt: new Date().toISOString().split('T')[0]
+                };
+
+                const products = localStorage.getItem('jmpProducts');
+                const productList = products ? JSON.parse(products) : [];
+                productList.push(newProduct);
+                localStorage.setItem('jmpProducts', JSON.stringify(productList));
+
+                setUserProducts([...userProducts, newProduct]);
+                setFormData({ title: '', description: '', price: '', images: [] });
+                setShowAddProduct(false);
+                alert('Product submitted successfully. Waiting for admin approval.');
+            };
+
+            const handleLogout = () => {
+                localStorage.removeItem('jmpCurrentUser');
+                localStorage.removeItem('jmpAuthToken');
+                navigate('/');
+            };
+
+            const generateOrderId = () => {
+                const randomDigits = Math.floor(1000000 + Math.random() * 9000000);
+                return `JLS${randomDigits}YI`;
+            };
+
+            const handleOrder = (product) => {
+                const currentUser = JSON.parse(localStorage.getItem('jmpCurrentUser'));
+                if (!currentUser) {
+                    alert('Please login to place an order.');
+                    navigate('/login');
+                    return;
+                }
+
+                const orderId = generateOrderId();
+                const newOrder = {
+                    id: orderId,
+                    productId: product.id,
+                    productTitle: product.title,
+                    productDescription: product.description,
+                    productPrice: product.price,
+                    productImages: product.images,
+                    sellerEmail: product.userEmail,
+                    sellerName: product.userName,
+                    buyerEmail: currentUser.email,
+                    buyerName: `${currentUser.firstName} ${currentUser.lastName}`,
+                    status: 'Ordered',
+                    orderDate: new Date().toISOString(),
+                    pickupDate: null
+                };
+
+                const stored = localStorage.getItem('jmpOrders');
+                const allOrders = stored ? JSON.parse(stored) : [];
+                allOrders.push(newOrder);
+                localStorage.setItem('jmpOrders', JSON.stringify(allOrders));
+
+                setOrders([...orders, newOrder]);
+
+                // Send message to seller
+                const messages = JSON.parse(localStorage.getItem('jmpMessages') || '[]');
+                messages.push({
+                    id: Date.now().toString() + 'seller',
+                    recipientEmail: product.userEmail,
+                    title: 'New Order Received',
+                    content: `New order ${orderId}: "${product.title}" has been placed. Drop the product at New yidi road, yinolu pharmacy, irewolede ilorin kwara state within 24 to 72 hours. Contact: 07070252673 for road direction. Product: ${product.title}, Description: ${product.description}, Image: ${product.images ? product.images[0] : 'No image'}`,
+                    time: new Date().toLocaleString(),
+                    read: false
+                });
+                localStorage.setItem('jmpMessages', JSON.stringify(messages));
+
+                alert('Order placed successfully! You will be notified when ready for pickup.');
+            };
+
+            const handleProfilePictureChange = (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = () => {
+                    setProfileData({ ...profileData, picture: reader.result });
+                };
+                reader.readAsDataURL(file);
+            };
+
+            const handleSaveProfile = () => {
+                localStorage.setItem('jmpCurrentUser', JSON.stringify(profileData));
+                updateUserRecord(profileData);
+                setCurrentUser(profileData);
+                setShowEditProfile(false);
+                alert('Profile updated!');
+            };
+
+            const handleBackToMarketplace = () => {
+                setShowEditProfile(false);
+                window.location.href = 'Marketplace.html';
+            };
+
+            return (
+                <div className="min-h-screen bg-[#0b0b0b] text-white">
+                    {/* Top Navigation Bar */}
+                    <header className="bg-[#111111] border-b border-[#D4AF37] px-6 py-4">
+                        <div className="max-w-7xl mx-auto flex items-center justify-between">
+                            <div className="flex flex-col items-center logo">
+                                <img src="Image/my-logo.png" alt="Joshua Luxury Store Logo" />
+                                <div className="text-sm font-bold text-[#D4AF37]">Joshua Luxury Store</div>
+                            </div>
+                            <div className="flex items-center gap-6">
+                                <button
+                                    onClick={() => navigate('/inbox')}
+                                    className="relative border border-[#D4AF37] text-[#D4AF37] px-4 py-2 rounded-full hover:bg-[#D4AF37] hover:text-black transition-colors flex items-center gap-2"
+                                >
+                                    📬 Inbox
+                                    {messages.length > 0 && (
+                                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                            {messages.length}
+                                        </span>
+                                    )}
+                                </button>
+
+                                <button
+                                    onClick={() => setShowOrderHistory(!showOrderHistory)}
+                                    className="border border-[#D4AF37] text-[#D4AF37] px-4 py-2 rounded-full hover:bg-[#D4AF37] hover:text-black transition-colors"
+                                >
+                                    📦 Order History
+                                </button>
+
+                                <button
+                                    onClick={() => setShowEditProfile(!showEditProfile)}
+                                    className="w-12 h-12 rounded-full border-2 border-[#D4AF37] bg-gray-800 flex items-center justify-center text-xl hover:bg-gray-700 transition-colors"
+                                >
+                                    {profileData.picture ? (
+                                        <img src={profileData.picture} alt="Profile" className="w-full h-full rounded-full object-cover" />
+                                    ) : (
+                                        '👤'
+                                    )}
+                                </button>
+
+                                <button
+                                    onClick={handleLogout}
+                                    className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-colors"
+                                >
+                                    Logout
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Main Content */}
+                    <div className="max-w-7xl mx-auto px-6 py-10">
+                        {/* Profile Edit Modal */}
+                        {showEditProfile && (
+                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                                <div className="bg-[#111111] border border-[#D4AF37] rounded-3xl p-8 w-full max-w-md">
+                                    <h2 className="text-3xl font-bold text-[#D4AF37] mb-6">Edit Profile</h2>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">First Name</label>
+                                            <input type="text" value={profileData.firstName || ''} onChange={(e) => setProfileData({...profileData, firstName: e.target.value})} className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">Last Name</label>
+                                            <input type="text" value={profileData.lastName || ''} onChange={(e) => setProfileData({...profileData, lastName: e.target.value})} className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                                            <input type="email" value={profileData.email || ''} disabled className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-gray-500 cursor-not-allowed" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">Phone</label>
+                                            <input type="tel" value={profileData.phone || ''} onChange={(e) => setProfileData({...profileData, phone: e.target.value})} className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white" />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">Profile Picture</label>
+                                            <input type="file" accept="image/*" onChange={handleProfilePictureChange} className="w-full text-sm text-gray-300 file:text-black file:bg-[#D4AF37] file:rounded-full file:px-3 file:py-2" />
+                                            {profileData.picture && (
+                                                <img src={profileData.picture} alt="Profile preview" className="mt-4 h-24 w-24 rounded-full object-cover border border-[#D4AF37]" />
+                                            )}
+                                        </div>
+
+                                        {hasOrders && (
+                                            <>
+                                                <h3 className="text-lg font-bold text-[#D4AF37] mt-6 mb-4">Bank Details (Required for Payouts)</h3>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-300 mb-2">Bank Name</label>
+                                                    <input type="text" value={profileData.bankName || ''} onChange={(e) => setProfileData({...profileData, bankName: e.target.value})} placeholder="e.g., Opay" className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white" />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-300 mb-2">Account Name</label>
+                                                    <input type="text" value={profileData.accountName || ''} onChange={(e) => setProfileData({...profileData, accountName: e.target.value})} placeholder="Full account name" className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white" />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-300 mb-2">Account Number</label>
+                                                    <input type="text" value={profileData.accountNumber || ''} onChange={(e) => setProfileData({...profileData, accountNumber: e.target.value})} placeholder="Account number" className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white" />
+                                                </div>
+                                            </>
+                                        )}
+                                        <div className="flex flex-col gap-3 mt-6 sm:flex-row">
+                                            <button onClick={handleSaveProfile} className="flex-1 bg-[#D4AF37] text-black py-2 rounded-full font-semibold hover:bg-opacity-80">Save</button>
+                                            <button onClick={handleBackToMarketplace} className="flex-1 border border-[#D4AF37] text-[#D4AF37] py-2 rounded-full font-semibold hover:bg-[#D4AF37] hover:text-black">Back to Marketplace</button>
+                                            <button onClick={() => setShowEditProfile(false)} className="flex-1 border border-[#D4AF37] text-[#D4AF37] py-2 rounded-full font-semibold hover:bg-[#D4AF37] hover:text-black">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Add Product Modal */}
+                        {showAddProduct && (
+                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                                <div className="bg-[#111111] border border-[#D4AF37] rounded-3xl p-8 w-full max-w-md max-h-96 overflow-y-auto">
+                                    <h2 className="text-3xl font-bold text-[#D4AF37] mb-6">Post Product</h2>
+                                    <form onSubmit={handleAddProduct} className="space-y-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">Product Images</label>
+                                            <input type="file" multiple accept="image/*" onChange={(e) => setFormData({...formData, images: Array.from(e.target.files)})} className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">Product Title</label>
+                                            <input type="text" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} placeholder="e.g., Luxury Watch" className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
+                                            <textarea value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} placeholder="Describe your product..." rows="3" className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white"></textarea>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">Price (₦)</label>
+                                            <input type="number" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} placeholder="5000" className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white" />
+                                            <p className="text-xs text-gray-400 mt-1">Note: A 10% website fee will be added to the listed price.</p>
+                                        </div>
+                                        <div className="flex gap-3 mt-6">
+                                            <button type="submit" className="flex-1 bg-[#D4AF37] text-black py-2 rounded-full font-semibold hover:bg-opacity-80">Post Product</button>
+                                            <button type="button" onClick={() => setShowAddProduct(false)} className="flex-1 border border-[#D4AF37] text-[#D4AF37] py-2 rounded-full font-semibold hover:bg-[#D4AF37] hover:text-black">Cancel</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Order History Modal */}
+                        {showOrderHistory && (
+                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                                <div className="bg-[#111111] border border-[#D4AF37] rounded-3xl p-8 w-full max-w-4xl max-h-96 overflow-y-auto">
+                                    <h2 className="text-3xl font-bold text-[#D4AF37] mb-6">Order History</h2>
+                                    {orders.length > 0 ? (
+                                        <div className="space-y-4">
+                                            {orders.map((order) => (
+                                                <div key={order.id} className="border border-[#D4AF37] rounded-3xl p-6">
+                                                    <div className="flex justify-between items-start mb-4">
+                                                        <div>
+                                                            <h3 className="text-xl font-bold text-white">{order.productTitle}</h3>
+                                                            <p className="text-gray-300 text-sm">{order.productDescription}</p>
+                                                            <p className="text-[#D4AF37] font-bold mt-2">₦{Math.round(parsePrice(order.productPrice) * 1.1).toLocaleString('en-NG')}</p>
+                                                        </div>
+                                                        <div className="text-right">
+                                                            <p className="text-gray-400 text-sm">Ordered on {new Date(order.orderDate).toLocaleDateString()}</p>
+                                                            <span className={`text-xs px-2 py-1 rounded-full ${order.status === 'Ordered' ? 'bg-yellow-600 text-white' : order.status === 'Ready for Pickup' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
+                                                                {order.status}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex justify-between items-center">
+                                                        <p className="text-gray-400 text-sm">Seller: {order.sellerName}</p>
+                                                        {order.status === 'Ready for Pickup' && (
+                                                            <div className="text-right">
+                                                                <p className="text-gray-300 text-sm">Pickup at: New Yidi Road, Yinolu Pharmacy, Irewolede, Ilorin, Kwara State</p>
+                                                                <p className="text-gray-300 text-sm">Transfer to: Bank: Opay, Name: Bamikole Victoria Kehinde, A/C: 7070252673</p>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="text-gray-300 text-center">No orders yet</p>
+                                    )}
+                                    <div className="flex justify-end mt-6">
+                                        <button onClick={() => setShowOrderHistory(false)} className="border border-[#D4AF37] text-[#D4AF37] py-2 px-6 rounded-full font-semibold hover:bg-[#D4AF37] hover:text-black">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {currentUser ? (
+                            <>
+                                <h1 className="text-4xl font-bold text-[#D4AF37] mb-2">Welcome, {currentUser.firstName}!</h1>
+                                <p className="text-gray-300 mb-10">Buy and sell premium items in our marketplace</p>
+
+                                <button onClick={() => setShowAddProduct(true)} className="mb-10 bg-[#D4AF37] text-black px-8 py-3 rounded-full font-semibold text-lg hover:bg-opacity-80 transition-colors">➕ Post Product</button>
+
+                                {userProducts.length > 0 && (
+                                    <div className="mb-12">
+                                        <h2 className="text-2xl font-bold text-[#D4AF37] mb-6">My Products</h2>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                            {userProducts.map((product) => (
+                                                <div key={product.id} className="rounded-3xl overflow-hidden border border-[#D4AF37] bg-[#111111] shadow-xl">
+                                                    <div className="h-48 bg-gray-800 flex items-center justify-center">
+                                                        {product.images && product.images.length > 0 ? (
+                                                            <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
+                                                        ) : (
+                                                            <span className="text-6xl">📦</span>
+                                                        )}
+                                                    </div>
+                                                    <div className="p-6">
+                                                        <div className="flex justify-between items-start mb-2">
+                                                            <h3 className="text-xl font-bold text-white">{product.title}</h3>
+                                                            {product.status === 'Pending' && <span className="bg-yellow-600 text-white text-xs px-2 py-1 rounded-full">Waiting for Approval</span>}
+                                                            {product.status === 'Approved' && <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">Approved</span>}
+                                                        </div>
+                                                        <p className="text-gray-300 text-sm mb-3">{product.description}</p>
+                                                        <p className="text-2xl font-bold text-[#D4AF37]">₦{parsePrice(product.price).toLocaleString('en-NG')}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div>
+                                    <h2 className="text-2xl font-bold text-[#D4AF37] mb-6">Browse All Products</h2>
+                                    {allProducts.length > 0 ? (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                            {allProducts.map((product) => (
+                                                <div key={product.id} className="rounded-3xl overflow-hidden border border-[#D4AF37] bg-[#111111] shadow-xl">
+                                                    <div className="h-48 bg-gray-800 flex items-center justify-center">
+                                                        {product.images && product.images.length > 0 ? (
+                                                            <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
+                                                        ) : (
+                                                            <span className="text-6xl">📦</span>
+                                                        )}
+                                                    </div>
+                                                    <div className="p-6">
+                                                        <h3 className="text-xl font-bold text-white mb-2">{product.title}</h3>
+                                                        <p className="text-gray-300 text-sm mb-3">{product.description}</p>
+                                                        <p className="text-2xl font-bold text-[#D4AF37]">₦{Math.round(parsePrice(product.price) * 1.1).toLocaleString('en-NG')}</p>
+                                                        <p className="text-gray-400 text-xs mt-2 mb-4">By {product.userName}</p>
+                                                        <div className="flex gap-2">
+                                                            <button
+                                                                onClick={() => navigate('/product/' + product.id)}
+                                                                className="flex-1 border border-[#D4AF37] text-[#D4AF37] py-2 rounded-full font-semibold hover:bg-[#D4AF37] hover:text-black transition-colors"
+                                                            >
+                                                                View Details
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleOrder(product)}
+                                                                className="flex-1 bg-[#D4AF37] text-black py-2 rounded-full font-semibold hover:bg-opacity-80 transition-colors"
+                                                            >
+                                                                Order Now
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="text-center py-10 border border-dashed border-[#D4AF37] rounded-3xl">
+                                            <p className="text-gray-300 text-lg">No approved products yet</p>
+                                            <p className="text-gray-400 text-sm">Products will appear here once they are approved by admins</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </>
+                        ) : (
+                            <div className="text-center py-20">
+                                <h1 className="text-4xl font-bold text-[#D4AF37] mb-4">Access Restricted</h1>
+                                <p className="text-gray-300 mb-8">You need to sign up or log in to access the marketplace.</p>
+                                <button
+                                    onClick={() => navigate('/signup')}
+                                    className="bg-[#D4AF37] text-black px-8 py-3 rounded-full font-semibold hover:bg-opacity-80 transition-colors"
+                                >
+                                    Sign Up Now
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        // Admin Components
+        const getUsers = () => {
+            const stored = localStorage.getItem('jmpUsers');
+            return stored ? JSON.parse(stored) : [];
+        };
+
+        const getProducts = () => {
+            const stored = localStorage.getItem('jmpProducts');
+            return stored ? JSON.parse(stored) : [];
+        };
+
+        const AdminDashboard = () => {
+            const navigate = useNavigate();
+            const [activeSection, setActiveSection] = useState('users');
+            const [users, setUsers] = useState(getUsers());
+            const [orders, setOrders] = useState([]);
+            const [products, setProducts] = useState(getProducts());
+
+            const [showRejectModal, setShowRejectModal] = useState(false);
+            const [rejectReason, setRejectReason] = useState('');
+            const [rejectingProductId, setRejectingProductId] = useState(null);
+
+            useEffect(() => {
+                const isAdmin = localStorage.getItem('jmpAdminAccess');
+                if (isAdmin !== 'true') {
+                    navigate('/');
+                    return;
+                }
+                loadOrders();
+            }, [navigate]);
+
+            const loadOrders = () => {
+                const stored = localStorage.getItem('jmpOrders');
+                setOrders(stored ? JSON.parse(stored) : []);
+            };
+
+            const updateOrderStatus = (orderId, newStatus) => {
+                const updated = orders.map(order =>
+                    order.id === orderId ? { ...order, status: newStatus } : order
+                );
+                setOrders(updated);
+                localStorage.setItem('jmpOrders', JSON.stringify(updated));
+
+                // If ready for pickup, send message to buyer
+                if (newStatus === 'Ready for Pickup') {
+                    const order = updated.find(o => o.id === orderId);
+                    if (order) {
+                        const messages = JSON.parse(localStorage.getItem('jmpMessages') || '[]');
+                        messages.push({
+                            id: Date.now().toString(),
+                            recipientEmail: order.buyerEmail,
+                            title: 'Order Ready for Pickup',
+                            content: `Your order for "${order.productTitle}" is ready for pickup at New Yidi Road, Yinolu Pharmacy, Irewolede, Ilorin, Kwara State. Transfer payment to: Bank: Opay, Name: Bamikole Victoria Kehinde, A/C: 7070252673`,
+                            time: new Date().toLocaleString(),
+                            read: false
+                        });
+                        localStorage.setItem('jmpMessages', JSON.stringify(messages));
+                    }
+                }
+            };
+
+            const updateProductStatus = (productId, newStatus, reason = null) => {
+                if (newStatus === 'Rejected') {
+                    if (!reason) {
+                        // If no reason, open modal
+                        setRejectingProductId(productId);
+                        setShowRejectModal(true);
+                        return;
+                    }
+                    // Send message
+                    const product = products.find(p => p.id === productId);
+                    if (product) {
+                        const messages = JSON.parse(localStorage.getItem('jmpMessages') || '[]');
+                        messages.push({
+                            id: Date.now().toString(),
+                            recipientEmail: product.userEmail,
+                            title: 'Product Rejected',
+                            content: `Your product "${product.title}" was rejected: ${reason}`,
+                            time: new Date().toLocaleString(),
+                            read: false
+                        });
+                        localStorage.setItem('jmpMessages', JSON.stringify(messages));
+                    }
+                }
+                
+                const updated = products.map(product =>
+                    product.id === productId ? { ...product, status: newStatus } : product
+                );
+                setProducts(updated);
+                localStorage.setItem('jmpProducts', JSON.stringify(updated));
+            };
+
+            const handleRejectSubmit = () => {
+                if (!rejectReason.trim()) {
+                    alert('Please provide a reason for rejection.');
+                    return;
+                }
+                updateProductStatus(rejectingProductId, 'Rejected', rejectReason);
+                setShowRejectModal(false);
+                setRejectReason('');
+                setRejectingProductId(null);
+            };
+
+            const deleteProduct = (productId) => {
+                if (confirm('Are you sure you want to delete this product?')) {
+                    const updated = products.filter(product => product.id !== productId);
+                    setProducts(updated);
+                    localStorage.setItem('jmpProducts', JSON.stringify(updated));
+                }
+            };
+
+            const viewUserDetails = (userId) => {
+                const user = users.find(u => u.id === userId);
+                alert(`User Details:\nName: ${user.name}\nEmail: ${user.email}\nStatus: ${user.status}\nJoined: ${user.joined}\nBank Info: Account ending in ****1234`);
+            };
+
+            return (
+                <div className="min-h-screen bg-[#0b0b0b] text-white">
+                    <header className="bg-[#111111] border-b border-[#D4AF37] px-6 py-4">
+                        <div className="flex items-center justify-between">
+                            <h1 className="text-2xl font-bold text-[#D4AF37]">Admin Dashboard</h1>
+                            <button
+                                onClick={() => { localStorage.removeItem('jmpAdminAccess'); navigate('/'); }}
+                                className="bg-[#D4AF37] text-black px-4 py-2 rounded-full font-semibold hover:bg-opacity-80 transition-colors"
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    </header>
+
+                    <div className="flex">
+                        <nav className="w-64 bg-[#111111] min-h-screen border-r border-[#D4AF37]">
+                            <div className="p-6">
+                                <h2 className="text-lg font-semibold text-[#D4AF37] mb-4">Management</h2>
+                                <div className="space-y-2">
+                                    <button
+                                        onClick={() => setActiveSection('users')}
+                                        className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${activeSection === 'users' ? 'bg-[#D4AF37] text-black' : 'text-gray-300 hover:bg-gray-800'}`}
+                                    >
+                                        Users
+                                        {users.length > 0 && <span className="ml-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{users.length}</span>}
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveSection('orders')}
+                                        className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${activeSection === 'orders' ? 'bg-[#D4AF37] text-black' : 'text-gray-300 hover:bg-gray-800'}`}
+                                    >
+                                        Orders
+                                        {orders.length > 0 && <span className="ml-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{orders.length}</span>}
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveSection('products')}
+                                        className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${activeSection === 'products' ? 'bg-[#D4AF37] text-black' : 'text-gray-300 hover:bg-gray-800'}`}
+                                    >
+                                        Products
+                                        {products.filter(p => p.status === 'Pending').length > 0 && <span className="ml-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{products.filter(p => p.status === 'Pending').length}</span>}
+                                    </button>
+                                </div>
+                            </div>
+                        </nav>
+
+                        <main className="flex-1 p-6">
+                            {activeSection === 'users' && (
+                                <div>
+                                    <h2 className="text-3xl font-bold text-[#D4AF37] mb-6">Users</h2>
+                                    <div className="bg-[#111111] border border-[#D4AF37] rounded-3xl overflow-hidden">
+                                        <table className="w-full">
+                                            <thead className="bg-[#D4AF37] text-black">
+                                                <tr>
+                                                    <th className="px-6 py-3 text-left">First Name</th>
+                                                    <th className="px-6 py-3 text-left">Last Name</th>
+                                                    <th className="px-6 py-3 text-left">Username</th>
+                                                    <th className="px-6 py-3 text-left">Email</th>
+                                                    <th className="px-6 py-3 text-left">Phone</th>
+                                                    <th className="px-6 py-3 text-left">Joined</th>
+                                                    <th className="px-6 py-3 text-left">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {users.map(user => (
+                                                    <tr key={user.id || user.username} className="border-t border-gray-700">
+                                                        <td className="px-6 py-4">{user.firstName || user.name?.split(' ')[0]}</td>
+                                                        <td className="px-6 py-4">{user.lastName || user.name?.split(' ')[1]}</td>
+                                                        <td className="px-6 py-4">{user.username}</td>
+                                                        <td className="px-6 py-4">{user.email}</td>
+                                                        <td className="px-6 py-4">{user.phone}</td>
+                                                        <td className="px-6 py-4">{user.joined || new Date().toISOString().split('T')[0]}</td>
+                                                        <td className="px-6 py-4">
+                                                            <button
+                                                                onClick={() => viewUserDetails(user.id || user.username)}
+                                                                className="bg-[#D4AF37] text-black px-3 py-1 rounded text-sm hover:bg-opacity-80"
+                                                            >
+                                                                View Details
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeSection === 'orders' && (
+                                <div>
+                                    <h2 className="text-3xl font-bold text-[#D4AF37] mb-6">Orders</h2>
+                                    <div className="bg-[#111111] border border-[#D4AF37] rounded-3xl overflow-hidden">
+                                        <table className="w-full">
+                                            <thead className="bg-[#D4AF37] text-black">
+                                                <tr>
+                                                    <th className="px-6 py-3 text-left">Order ID</th>
+                                                    <th className="px-6 py-3 text-left">Product</th>
+                                                    <th className="px-6 py-3 text-left">Buyer</th>
+                                                    <th className="px-6 py-3 text-left">Seller</th>
+                                                    <th className="px-6 py-3 text-left">Price</th>
+                                                    <th className="px-6 py-3 text-left">Status</th>
+                                                    <th className="px-6 py-3 text-left">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {orders.map((order) => (
+                                                    <tr key={order.id} className="border-t border-gray-700">
+                                                        <td className="px-6 py-4">{order.id}</td>
+                                                        <td className="px-6 py-4">{order.productTitle}</td>
+                                                        <td className="px-6 py-4">{order.buyerName}</td>
+                                                        <td className="px-6 py-4">{order.sellerName}</td>
+                                                        <td className="px-6 py-4">₦{Math.round(parseInt(order.productPrice) * 1.1).toLocaleString('en-NG')}</td>
+                                                        <td className="px-6 py-4">
+                                                            <select
+                                                                value={order.status}
+                                                                onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                                                                className="bg-gray-800 border border-[#D4AF37] rounded px-2 py-1 text-white"
+                                                            >
+                                                                <option value="Ordered">Ordered</option>
+                                                                <option value="Processing">Processing</option>
+                                                                <option value="Ready for Pickup">Ready for Pickup</option>
+                                                                <option value="Completed">Completed</option>
+                                                                <option value="Cancelled">Cancelled</option>
+                                                            </select>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <button className="text-[#D4AF37] hover:underline">View Details</button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeSection === 'products' && (
+                                <div>
+                                    <h2 className="text-3xl font-bold text-[#D4AF37] mb-6">Products</h2>
+                                    <div className="bg-[#111111] border border-[#D4AF37] rounded-3xl overflow-hidden">
+                                        <table className="w-full">
+                                            <thead className="bg-[#D4AF37] text-black">
+                                                <tr>
+                                                    <th className="px-6 py-3 text-left">Title</th>
+                                                    <th className="px-6 py-3 text-left">Description</th>
+                                                    <th className="px-6 py-3 text-left">Price</th>
+                                                    <th className="px-6 py-3 text-left">Status</th>
+                                                    <th className="px-6 py-3 text-left">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {products.map(product => (
+                                                    <tr key={product.id} className="border-t border-gray-700">
+                                                        <td className="px-6 py-4">{product.title}</td>
+                                                        <td className="px-6 py-4">{product.description}</td>
+                                                        <td className="px-6 py-4">₦{parsePrice(product.price).toLocaleString('en-NG')}</td>
+                                                        <td className="px-6 py-4">
+                                                            <span className={`px-2 py-1 rounded-full text-xs ${
+                                                                product.status === 'Approved' ? 'bg-green-600 text-white' :
+                                                                product.status === 'Pending' ? 'bg-yellow-600 text-white' :
+                                                                'bg-red-600 text-white'
+                                                            }`}>
+                                                                {product.status}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            {product.status === 'Pending' && (
+                                                                <>
+                                                                    <button
+                                                                        onClick={() => updateProductStatus(product.id, 'Approved')}
+                                                                        className="bg-green-600 text-white px-3 py-1 rounded text-sm mr-2 hover:bg-green-700"
+                                                                    >
+                                                                        Approve
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => updateProductStatus(product.id, 'Rejected')}
+                                                                        className="bg-red-600 text-white px-3 py-1 rounded text-sm mr-2 hover:bg-red-700"
+                                                                    >
+                                                                        Reject
+                                                                    </button>
+                                                                </>
+                                                            )}
+                                                            <button
+                                                                onClick={() => deleteProduct(product.id)}
+                                                                className="bg-gray-600 text-white px-3 py-1 rounded text-sm hover:bg-gray-700"
+                                                            >
+                                                                Delete
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            )}
+                        </main>
+                    </div>
+
+                    {/* Reject Product Modal */}
+                    {showRejectModal && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                            <div className="bg-[#111111] border border-[#D4AF37] rounded-3xl p-8 w-full max-w-md">
+                                <h2 className="text-3xl font-bold text-[#D4AF37] mb-6">Reject Product</h2>
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-300 mb-2">Reason for Rejection</label>
+                                        <textarea
+                                            value={rejectReason}
+                                            onChange={(e) => setRejectReason(e.target.value)}
+                                            placeholder="Please provide a detailed reason for rejecting this product..."
+                                            rows="4"
+                                            className="w-full px-3 py-2 bg-gray-800 border border-[#D4AF37] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+                                        />
+                                    </div>
+                                    <div className="flex gap-3 mt-6">
+                                        <button
+                                            onClick={handleRejectSubmit}
+                                            className="flex-1 bg-red-600 text-white py-2 rounded-full font-semibold hover:bg-red-700"
+                                        >
+                                            Reject Product
+                                        </button>
+                                        <button
+                                            onClick={() => { setShowRejectModal(false); setRejectReason(''); setRejectingProductId(null); }}
+                                            className="flex-1 border border-[#D4AF37] text-[#D4AF37] py-2 rounded-full font-semibold hover:bg-[#D4AF37] hover:text-black"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                </div>
+            );
+        };
+
+        const App = () => (
+            <HashRouter>
+                <div className="min-h-screen flex flex-col">
+                    <div className="flex-grow">
+                        <Routes>
+                            <Route path="/" element={<LandingPage />} />
+                            <Route path="/signup" element={<Signup />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/profile-setup" element={<ProfileSetup />} />
+                            <Route path="/admin-login" element={<AdminLogin />} />
+                            <Route path="/inbox" element={<Inbox />} />
+                            <Route path="/marketplace" element={<MarketplaceDashboard />} />
+                            <Route path="/admin" element={<AdminDashboard />} />
+                            <Route path="*" element={<LandingPage />} />
+                        </Routes>
+                    </div>
+                    <Footer />
+                </div>
+            </HashRouter>
+        );
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+    </script>
+</body>
+</html>

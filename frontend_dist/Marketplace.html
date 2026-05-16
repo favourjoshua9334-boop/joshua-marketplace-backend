@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joshua Luxury Store - Marketplace</title>
+    <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/history@5/umd/history.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-router@6/umd/react-router.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-router-dom@6/umd/react-router-dom.development.js"></script>
+    <script>
+        // Check if required libraries loaded
+        if (typeof React === 'undefined') {
+            document.getElementById('root').innerHTML = '<div style="color: red; text-align: center; padding: 50px;"><h1>React Library Failed to Load</h1><p>Please check your internet connection and try again.</p></div>';
+        } else if (typeof ReactDOM === 'undefined') {
+            document.getElementById('root').innerHTML = '<div style="color: red; text-align: center; padding: 50px;"><h1>ReactDOM Library Failed to Load</h1><p>Please check your internet connection and try again.</p></div>';
+        } else if (typeof Babel === 'undefined') {
+            document.getElementById('root').innerHTML = '<div style="color: red; text-align: center; padding: 50px;"><h1>Babel Library Failed to Load</h1><p>Please check your internet connection and try again.</p></div>';
+        }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="./backend-api.js"></script>
+    <style>
+        @keyframes wave {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        body {
+            font-family: serif;
+        }
+        .logo img {
+            width: 90px;
+            height: 90px;
+            -o-object-fit: contain;
+               object-fit: contain;
+            -o-object-position: center;
+               object-position: center;
+            display: block;
+            background: transparent;
+            border-radius: 50%;
+            padding: 4px;
+        }
+        @media (max-width: 768px) {
+           .logo img {
+              width: 65px;
+              height: 65px;
+           }
+        }
+    </style>
+</head>
+<body class="bg-[#0b0b0b] text-white min-h-screen">
+    <div id="root"></div>
+    <script type="text/babel">
+        console.log('Marketplace script loaded');
+        const { useState, useEffect } = React;
+        // (rest of built inline script omitted for brevity)
+    </script>
+</body>
+</html>

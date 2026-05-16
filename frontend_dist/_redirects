@@ -1,0 +1,8 @@
+/marketplace        /Marketplace.html  200
+/admin            /admin.html      200
+/verification     /verification.html 200
+/profile          /profile.html    200
+/favorites        /favorites.html  200
+/cart             /cart.html       200
+/verification-notice /verification-notice.html 200
+/*               /index.html      200
